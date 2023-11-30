@@ -3,18 +3,12 @@ import 'package:restaurant_counter/models/restaurant.dart';
 import 'package:restaurant_counter/api/config.dart';
 
 Widget itemCard(BuildContext context, item, {Function()? onTap, String? type}) {
-  // todo: type == order or type == config
-
   return Padding(
       padding:
           const EdgeInsets.only(top: 5.0, bottom: 5.0, left: 5.0, right: 5.0),
       child: GestureDetector(
-          // highlightColor: Colors.transparent,
-          // splashColor: Colors.transparent,
-          onTap:
-              item.status == Status.ACTIVED.name || type == PageType.CONFIG.name
-                  ? onTap
-                  : () => {},
+          key: Key(item.id),
+          onTap: item.status == Status.ACTIVED.name ? onTap : () => {},
           child: Container(
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10.0),

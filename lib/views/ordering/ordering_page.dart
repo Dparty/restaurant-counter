@@ -112,17 +112,18 @@ class _OrderingPageState extends State<OrderingPage> {
                         width: 100,
                         height: 100,
                         child: OutlinedButton(
+                            key: Key(index.toString()),
                             style: OutlinedButton.styleFrom(
                               side: BorderSide(
                                 width: 1.0,
                                 color: tableProvider.selectedTable?.label ==
                                         restaurant.tables[index].label
-                                    ? Color(0xFFC88D67)
-                                    : Color(0xFFFFECDF),
+                                    ? const Color(0xFFC88D67)
+                                    : const Color(0xFFFFECDF),
                               ),
                               backgroundColor: hasOrdersList
                                       .contains(restaurant.tables[index].label)
-                                  ? Color(0xFFFFECDF)
+                                  ? const Color(0xFFFFECDF)
                                   : Colors.white,
                             ),
                             onPressed: () {

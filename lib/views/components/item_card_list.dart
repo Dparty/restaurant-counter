@@ -24,7 +24,6 @@ class ItemCardListView extends StatefulWidget {
 class _ItemCardListViewState extends State<ItemCardListView> {
   @override
   Widget build(BuildContext context) {
-    debugInvertOversizedImages = true;
     return Scaffold(
       backgroundColor: const Color(0xFFFCFAF8),
       body: ListView(
@@ -48,6 +47,7 @@ class _ItemCardListViewState extends State<ItemCardListView> {
               child: GridView.count(
                   physics: const PageScrollPhysics(),
                   crossAxisCount: widget.crossAxisCount,
+                  childAspectRatio: 1,
                   primary: false,
                   children: [
                     ...widget.itemList!

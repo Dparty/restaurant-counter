@@ -40,18 +40,13 @@ class CartCard extends StatelessWidget {
                 ),
                 child: Image(
                     image: ResizeImage(
-                  NetworkImage(item.image),
-                  width: 300,
-                ))
-                // child: FadeInImage(
-                //   image: NetworkImage(item.image),
-                //   placeholder: const AssetImage("images/default.png"),
-                //   imageErrorBuilder: (context, error, stackTrace) {
-                //     return Image.asset("images/default.png",
-                //         fit: BoxFit.fitWidth);
-                //   },
-                // ),
-                ),
+                  NetworkImage(
+                    item.image.isEmpty
+                        ? ("$defaultImage?imageView2/1/w/144/q/85")
+                        : ("${item.image}?imageView2/1/w/144/q/85"),
+                  ),
+                  width: 144,
+                ))),
           ),
         ),
         const SizedBox(width: 20),

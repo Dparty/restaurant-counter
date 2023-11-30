@@ -20,10 +20,14 @@ class OrderItem extends StatefulWidget {
 
 class _OrderItemState extends State<OrderItem> with TickerProviderStateMixin {
   TabController? _tabController;
+  late final restaurant;
 
   @override
   void initState() {
     super.initState();
+    restaurant = context.read<RestaurantProvider>();
+    _tabController =
+        TabController(length: restaurant.itemsMap.keys.length, vsync: this);
   }
 
   void onTapCallback(item) {
@@ -37,11 +41,11 @@ class _OrderItemState extends State<OrderItem> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    final restaurant = context.watch<RestaurantProvider>();
+    // final restaurant = context.read<RestaurantProvider>();
     // _tabController =
     //     TabController(length: restaurant.itemsMap.keys.length + 1, vsync: this);
-    _tabController =
-        TabController(length: restaurant.itemsMap.keys.length, vsync: this);
+    // _tabController =
+    //     TabController(length: restaurant.itemsMap.keys.length, vsync: this);
 
     return DefaultLayout(
         left: SizedBox(
@@ -56,7 +60,7 @@ class _OrderItemState extends State<OrderItem> with TickerProviderStateMixin {
             const SizedBox(height: 15.0),
             Row(
               children: [
-                Text('餐廳名稱：${context.read<RestaurantProvider>().name}'),
+                Text('餐廳名稱：${restaurant.name}'),
                 const SizedBox(width: 10),
                 Text(
                     '餐桌號：${context.read<SelectedTableProvider>().selectedTable?.label}')
@@ -67,6 +71,7 @@ class _OrderItemState extends State<OrderItem> with TickerProviderStateMixin {
                 Expanded(
                     flex: 8,
                     child: TabBar(
+                        key: UniqueKey(),
                         controller: _tabController,
                         indicatorColor: Colors.transparent,
                         labelColor: Color(0xFFC88D67),

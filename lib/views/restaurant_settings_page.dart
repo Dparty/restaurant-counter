@@ -70,22 +70,6 @@ class _RestaurantSettingsPageState extends State<RestaurantSettingsPage>
     loadRestaurant();
   }
 
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
-  void removeItem(String id) {
-    deleteItem(id).then((value) => loadRestaurant());
-  }
-
-  void removePrinter(String id) => deletePrinter(id)
-      .then((_) => loadRestaurant())
-      .onError((error, stackTrace) => showAlertDialog(context, "有品項使用此打印機"));
-
-  void removeTable(String id) => deleteTable(id).then((_) => loadRestaurant());
-
   void _onNavTapped(int index) {
     setState(() {
       _selectedNavIndex = index;

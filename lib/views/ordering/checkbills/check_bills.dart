@@ -32,7 +32,7 @@ class BillCheckbox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
+    return GestureDetector(
       onTap: () {
         onChanged(!value);
       },
@@ -111,8 +111,8 @@ class _CheckBillsViewState extends State<CheckBillsView> {
                       height: 50.0,
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(25.0),
-                          color: Color(0xFFC88D67)),
-                      child: InkWell(
+                          color: const Color(0xFFC88D67)),
+                      child: GestureDetector(
                         onTap: () {
                           if (widget.table == null) {
                             showAlertDialog(context, "請選擇桌號");
@@ -190,8 +190,8 @@ class _CheckBillsViewState extends State<CheckBillsView> {
                               height: 35.0,
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10.0),
-                                  color: Color(0xFFC88D67)),
-                              child: InkWell(
+                                  color: const Color(0xFFC88D67)),
+                              child: GestureDetector(
                                 onTap: () {
                                   if (widget.table == null) {
                                     showAlertDialog(context, "請選擇桌號");
@@ -223,8 +223,8 @@ class _CheckBillsViewState extends State<CheckBillsView> {
                                 height: 35.0,
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(10.0),
-                                    color: Color(0xFFC88D67)),
-                                child: InkWell(
+                                    color: const Color(0xFFC88D67)),
+                                child: GestureDetector(
                                   onTap: () async {
                                     if (selectedIds.isEmpty) {
                                       showAlertDialog(context, "請勾選需要打印的訂單");
@@ -263,8 +263,8 @@ class _CheckBillsViewState extends State<CheckBillsView> {
                                 height: 35.0,
                                 decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(10.0),
-                                    color: Color(0xFFC88D67)),
-                                child: InkWell(
+                                    color: const Color(0xFFC88D67)),
+                                child: GestureDetector(
                                   onTap: () async {
                                     if (selectedIds!.isEmpty) {
                                       showAlertDialog(context, "請勾選需要打印的訂單");
