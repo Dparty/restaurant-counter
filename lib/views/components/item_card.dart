@@ -34,33 +34,16 @@ Widget itemCard(BuildContext context, item, {Function()? onTap, String? type}) {
                     height: 150,
                     child: Padding(
                         padding: const EdgeInsets.all(8.0),
-                        // child: Image.network(
-                        //   item!.images.isEmpty
-                        //       ? defaultImage
-                        //       : item.images[0],
-                        //   cacheWidth: 344,
-                        //   cacheHeight: 268,
-                        // )
                         child: Image(
                             image: ResizeImage(
                           NetworkImage(
                             item!.images.isEmpty
-                                ? defaultImage
-                                : item.images[0],
+                                ? ("$defaultImage?imageView2/1/w/268/q/85")
+                                : ("${item.images[0]}?imageView2/1/w/268/q/85"),
                           ),
                           width: 268,
                           height: 268,
-                        ))
-                        // child: FadeInImage(
-                        //   image: NetworkImage(
-                        //     item!.images.isEmpty
-                        //         ? defaultImage
-                        //         : item.images[0],
-                        //   ),
-                        //   fit: BoxFit.fitHeight,
-                        //   placeholder: const AssetImage("images/default.png"),
-                        // ),
-                        ),
+                        ))),
                   ),
                   Center(
                     child: Padding(
