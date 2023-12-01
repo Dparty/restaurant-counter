@@ -5,3 +5,4 @@ const restaurantApiDomain = "restaurant-uat.sum-foods.com";
 const orderWebDomain = "ordering-uat.sum-foods.com";
 const baseUrl = "https://$restaurantApiDomain";
 const orderingBaseUrl = "https://$orderWebDomain";
+const authApi = "https://auth-uat.sum-foods.com";

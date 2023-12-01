@@ -7,9 +7,8 @@ import "config.dart";
 Future<dynamic> signinApi(String email, String password) async {
   var body = jsonEncode({'email': email, 'password': password});
   try {
-    final response = await http.post(Uri.parse("$baseUrl/sessions"),
+    final response = await http.post(Uri.parse("$authApi/sessions"),
         body: body, headers: {'Authorization': await getToken()});
-
     if (response.statusCode == 201) {
       return Session.fromJson(jsonDecode(response.body));
     } else {
