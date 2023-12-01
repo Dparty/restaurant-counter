@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import "package:shared_preferences/shared_preferences.dart";
 import 'package:restaurant_counter/views/restaurant_page.dart';
 import 'package:restaurant_counter/api/account.dart';
+import 'package:restaurant_counter/views/components/dialog.dart';
 
 class SigninForm extends StatefulWidget {
   const SigninForm({super.key});
@@ -17,12 +18,19 @@ class _SigninFormState extends State<SigninForm> {
 
   void signin(BuildContext context) async {
     final prefs = await SharedPreferences.getInstance();
-    signinApi(email.text, password.text).then((session) {
-      prefs.setString('token', session.token).then((_) {
-        Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (context) => const RestaurantsPage()));
+    try {
+      signinApi(email.text, password.text).then((session) {
+        prefs.setString('token', session.token).then((_) {
+          Navigator.pushReplacement(context,
+              MaterialPageRoute(builder: (context) => const RestaurantsPage()));
+        });
+      }).onError((error, stackTrace) {
+        // print(error);
+        showAlertDialog(context, "登錄失敗\n${error.toString()}");
       });
-    });
+    } catch (e) {
+      print(e);
+    }
   }
 
   @override
