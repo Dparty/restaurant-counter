@@ -243,7 +243,6 @@ Future<UploadImage> uploadItemImage(String itemId, File file) async {
   }
 }
 
-
 Future<Bill> createBill(
     String tableId, List<Specification> specifications) async {
   final createBillRequest = CreateBillRequest(specifications: specifications);
@@ -255,5 +254,21 @@ Future<Bill> createBill(
     return Bill.fromJson(jsonDecode(response.body));
   } else {
     throw Exception('Failed to create bill');
+  }
+}
+
+Future<void> cancelBillItems(
+    String id, List<Specification> specifications) async {
+  final token = await getToken();
+  final createBillRequest = CreateBillRequest(specifications: specifications);
+  final response = await http.patch(
+    Uri.parse("$baseUrl/bills/${id}/items/cancel"),
+    body: jsonEncode(createBillRequest),
+    headers: {'Authorization': "bearer $token"},
+  );
+  if (response.statusCode == 200) {
+    return;
+  } else {
+    throw Exception('Failed to cancel bill items');
   }
 }

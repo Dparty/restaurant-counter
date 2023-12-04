@@ -49,14 +49,14 @@ class _OrderingPageState extends State<OrderingPage> {
     listBills(restaurantId, status: 'SUBMITTED').then((orders) {
       oldOrders = context.read<SelectedTableProvider>().tableOrders;
 
-      if (orders.length == oldOrders?.length) {
-        oldIdList = oldOrders == null
-            ? []
-            : {...oldOrders!.map((e) => e.id).toList()}.toList();
-
-        if (const IterableEquality().equals(
-            {...orders.map((e) => e.id).toList()}.toList(), oldIdList)) return;
-      }
+      // if (orders.length == oldOrders?.length) {
+      //   oldIdList = oldOrders == null
+      //       ? []
+      //       : {...oldOrders!.map((e) => e.id).toList()}.toList();
+      //
+      //   if (const IterableEquality().equals(
+      //       {...orders.map((e) => e.id).toList()}.toList(), oldIdList)) return;
+      // }
 
       context.read<SelectedTableProvider>().setAllTableOrders(orders);
       final labelList = {...orders.map((e) => e.tableLabel).toList()}.toList();

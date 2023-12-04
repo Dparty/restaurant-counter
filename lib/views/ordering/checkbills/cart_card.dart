@@ -95,69 +95,71 @@ class CartCard extends StatelessWidget {
 
 // CartCard for current bill review
 class CartCardForBill extends StatelessWidget {
-  const CartCardForBill({
-    Key? key,
-    required this.item,
-    required this.specification,
-  }) : super(key: key);
+  const CartCardForBill(
+      {Key? key,
+      required this.item,
+      required this.specification,
+      this.onDelete})
+      : super(key: key);
 
   final model.Item item;
   final Iterable<Pair> specification;
+  final Function? onDelete;
 
   @override
   Widget build(BuildContext context) {
     return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        SizedBox(
-          width: 88,
-          child: AspectRatio(
-            aspectRatio: 0.98,
-            child: Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: Color(0xFFFFECDF),
-                borderRadius: BorderRadius.circular(15),
-              ),
-              child: FadeInImage(
-                image: NetworkImage(
-                    item.images.isEmpty ? defaultImage : item.images[0]),
-                placeholder: const AssetImage("images/default.png"),
-                imageErrorBuilder: (context, error, stackTrace) {
-                  return Image.asset("images/default.png",
-                      fit: BoxFit.fitWidth);
-                },
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            SizedBox(
+              width: 310,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    item.name!,
+                    style: const TextStyle(
+                      color: Colors.black,
+                      fontSize: 16,
+                    ),
+                    maxLines: 2,
+                  ),
+                  Row(
+                    children: [
+                      ...specification.map((e) => Text(
+                            "${e.left}: ${e.right}; ",
+                          ))
+                    ],
+                  ),
+                ],
               ),
             ),
-          ),
+            SizedBox(
+              width: 100,
+              child: Text("價格：\$${item.pricing / 100}"),
+            )
+          ],
         ),
-        const SizedBox(width: 20),
-        Expanded(
-            flex: 1,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  item.name!,
-                  style: const TextStyle(color: Colors.black, fontSize: 16),
-                  maxLines: 2,
+        onDelete != null
+            ? SizedBox(
+                height: 30,
+                width: 60,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFFC88D67),
+                    elevation: 0,
+                  ),
+                  onPressed: () {
+                    onDelete!();
+                  },
+                  child: const Text("删除"),
                 ),
-                const SizedBox(height: 10),
-                Column(
-                  children: [
-                    ...specification.map((e) => Text(
-                          "${e.left}: ${e.right};",
-                        ))
-                  ],
-                ),
-                Row(
-                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(child: Text("價格：\$${item.pricing / 100}")),
-                  ],
-                )
-              ],
-            )),
-        const SizedBox(width: 20),
+              )
+            : SizedBox.shrink(),
       ],
     );
   }
