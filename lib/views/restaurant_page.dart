@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:restaurant_counter/main.dart';
 import 'package:restaurant_counter/models/restaurant.dart';
 import 'package:restaurant_counter/views/restaurant_settings_page.dart';
@@ -40,6 +41,11 @@ class _RestaurantState extends State<RestaurantsPage> {
         automaticallyImplyLeading: false,
         title: const Text('餐廳列表'),
         actions: [
+          IconButton(
+              onPressed: () {
+                SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+              },
+              icon: const Icon(Icons.close_outlined)),
           IconButton(
               onPressed: () {
                 signout().then((_) {

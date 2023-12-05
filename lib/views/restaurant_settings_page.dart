@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
+import 'dart:convert';
 import 'package:restaurant_counter/views/components/dialog.dart';
 import 'package:restaurant_counter/views/components/default_layout.dart';
 import 'package:restaurant_counter/views/ordering/ordering_page.dart';
 
 import 'package:restaurant_counter/models/restaurant.dart' as model;
+import 'package:web_socket_channel/html.dart';
 import '../api/restaurant.dart';
+import '../api/utils.dart';
 import 'components/navbar.dart';
 
 import 'package:restaurant_counter/provider/restaurant_provider.dart';
 import 'package:provider/provider.dart';
+// import 'package:web_socket_channel/io.dart';
+// import 'package:web_socket_channel/web_socket_channel.dart';
 
 class RestaurantSettingsPage extends StatefulWidget {
   final String restaurantId;
@@ -37,7 +42,9 @@ class _RestaurantSettingsPageState extends State<RestaurantSettingsPage>
 
   _RestaurantSettingsPageState({required this.restaurantId});
 
-  void loadRestaurant() {
+  void loadRestaurant() async {
+    final token = await getToken();
+
     getRestaurant(restaurantId).then((restaurant) {
       setState(() {
         this.restaurant = restaurant;
@@ -52,6 +59,20 @@ class _RestaurantSettingsPageState extends State<RestaurantSettingsPage>
             restaurant.tables,
             restaurant.categories,
           );
+
+//       /// Create the WebSocket channel
+//       // final channel = WebSocketChannel.connect(
+//       final channel = IOWebSocketChannel.connect(
+//         Uri.parse(
+//           "wss://restaurant-uat.sum-foods.com/bills/subscription?restaurantId=${restaurantId}",
+//         ),
+//       );
+// //?authorization=Bearer ${token}
+//       channel.stream.listen((event) {
+//         print('got message');
+//       });
+//
+//
     });
     listPrinters(restaurantId).then((list) => setState(() {
           printers = list.data;
