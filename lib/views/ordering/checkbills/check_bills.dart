@@ -3,6 +3,8 @@ import 'package:collection/collection.dart';
 
 import 'package:restaurant_counter/api/bill.dart';
 import 'package:restaurant_counter/views/components/dialog.dart';
+import '../../../api/restaurant.dart';
+import '../../../models/order.dart';
 import '../order_Item_view.dart';
 
 // models
@@ -13,12 +15,13 @@ import 'package:restaurant_counter/models/bill.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurant_counter/provider/selected_table_provider.dart';
 import 'package:restaurant_counter/provider/restaurant_provider.dart';
-
+import 'package:restaurant_counter/views/ordering/checkbills/cart_card.dart';
 import 'offset_options_dialog.dart';
 
 class BillCheckbox extends StatelessWidget {
   const BillCheckbox({
     super.key,
+    required this.bill,
     required this.label,
     required this.padding,
     required this.value,
@@ -29,12 +32,23 @@ class BillCheckbox extends StatelessWidget {
   final EdgeInsets padding;
   final bool value;
   final ValueChanged<bool> onChanged;
+  final Bill bill;
 
   @override
   Widget build(BuildContext context) {
+    void onBillTap(Bill bill) async {
+      await showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return ShowCurrentBill(orders: bill);
+        },
+      );
+    }
+
     return GestureDetector(
       onTap: () {
-        onChanged(!value);
+        onBillTap(bill);
+        // onChanged(!value);
       },
       child: Padding(
         padding: padding,
@@ -159,20 +173,21 @@ class _CheckBillsViewState extends State<CheckBillsView> {
                           child: Column(
                     children: [
                       ...?selectedTableBills?.mapIndexed(
-                        (index, order) => BillCheckbox(
-                          label: "取餐號：${order.pickUpCode.toString()}",
+                        (index, bill) => BillCheckbox(
+                          bill: bill,
+                          label: "取餐號：${bill.pickUpCode.toString()}",
                           padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                          value: selectedIds.contains(order.id),
+                          value: selectedIds.contains(bill.id),
                           onChanged: (bool newValue) {
                             setState(() {
                               if (newValue == true) {
                                 context
                                     .read<SelectedTableProvider>()
-                                    .addId(order.id);
+                                    .addId(bill.id);
                               } else {
                                 context
                                     .read<SelectedTableProvider>()
-                                    .removeId(order.id);
+                                    .removeId(bill.id);
                               }
                             });
                           },
@@ -317,5 +332,101 @@ class _CheckBillsViewState extends State<CheckBillsView> {
                       ))
                 ],
               ));
+  }
+}
+
+class ShowCurrentBill extends StatefulWidget {
+  final Bill orders;
+  const ShowCurrentBill({Key? key, required this.orders}) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() => _ShowCurrentBillState();
+}
+
+class _ShowCurrentBillState extends State<ShowCurrentBill> {
+  late List<Order> tmpOrders;
+  List<model.Specification> deleted = [];
+
+  @override
+  void initState() {
+    super.initState();
+    setState(() {
+      tmpOrders = List.from(widget.orders.orders);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text("取餐號：${widget.orders?.pickUpCode}"),
+      content: Builder(builder: (context) {
+        var height = MediaQuery.of(context).size.height - 200;
+        var width = MediaQuery.of(context).size.width - 800;
+        return Column(
+          children: [
+            Container(
+              width: 150,
+              height: 35.0,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10.0),
+                  color: const Color(0xFFC88D67)),
+              child: InkWell(
+                onTap: () async {
+                  showAlertDialog(
+                    context,
+                    "確認修改訂單?",
+                    onConfirmed: () async {
+                      await cancelBillItems(widget.orders.id, deleted)
+                          .then((e) {
+                        Navigator.of(context).pop();
+                        showAlertDialog(context, "訂單已修改");
+                      });
+                    },
+                  );
+                },
+                child: const Center(
+                    child: Text(
+                  '提交更改',
+                  style: TextStyle(
+                      fontSize: 14.0,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white),
+                )),
+              ),
+            ),
+            SizedBox(
+              height: height,
+              width: width,
+              child: ListView(
+                  scrollDirection: Axis.vertical,
+                  shrinkWrap: true,
+                  children: tmpOrders
+                      .asMap()
+                      .map((i, element) => MapEntry(
+                          i,
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: CartCardForBill(
+                                item: element.item,
+                                specification: element.specification,
+                                onDelete: () {
+                                  tmpOrders.removeAt(i);
+                                  deleted.add(model.Specification(
+                                    itemId: element.item.id,
+                                    options: element.specification.toList(),
+                                  ));
+                                  setState(() {
+                                    tmpOrders = tmpOrders;
+                                    deleted = deleted;
+                                  });
+                                }),
+                          )))
+                      .values
+                      .toList()),
+            )
+          ],
+        );
+      }),
+    );
   }
 }
