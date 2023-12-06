@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 
@@ -10,8 +13,11 @@ import 'package:provider/provider.dart';
 import 'package:restaurant_counter/provider/restaurant_provider.dart';
 import 'package:restaurant_counter/provider/selected_table_provider.dart';
 
+import '../../api/utils.dart';
 import '../../models/bill.dart';
 import 'package:collection/collection.dart';
+
+import '../../provider/socket_util.dart';
 
 class OrderingPage extends StatefulWidget {
   final String restaurantId;
@@ -37,11 +43,34 @@ class _OrderingPageState extends State<OrderingPage> {
     super.initState();
 
     if (mounted) {
+      if (!kIsWeb) {
+        WebSocketUtility().initWebSocket(
+            id: restaurantId,
+            onOpen: () {
+              WebSocketUtility().initHeartBeat();
+            },
+            onMessage: (data) {
+              print("message");
+              List<Bill>? billList = (jsonDecode(data) as Iterable)
+                  .map((e) => Bill.fromJson(e))
+                  .toList();
+              List<Bill>? submittedBills =
+                  billList?.where((i) => i.status == 'SUBMITTED').toList();
+              context
+                  .read<SelectedTableProvider>()
+                  .setAllTableOrders(submittedBills);
+            },
+            onError: (e) {
+              print(e);
+            });
+      }
+      // else {
       _timeDilationTimer?.cancel();
       _timeDilationTimer =
           Timer.periodic(const Duration(milliseconds: 3000), pollingBills);
 
       pollingBills(_timeDilationTimer!);
+      // }
     }
   }
 
@@ -68,15 +97,25 @@ class _OrderingPageState extends State<OrderingPage> {
 
   @override
   void dispose() {
+    super.dispose();
     _timeDilationTimer?.cancel();
     _timeDilationTimer = null;
-    super.dispose();
+    WebSocketUtility().closeSocket();
   }
 
   @override
   Widget build(BuildContext context) {
     final restaurant = context.watch<RestaurantProvider>();
     final tableProvider = context.read<SelectedTableProvider>();
+
+    List<Bill>? orders = tableProvider.tableOrders;
+    final List<String?> labelList = orders == null
+        ? []
+        : {...orders!.map((e) => e.tableLabel).toList()}.toList();
+    print(labelList?.length);
+    setState(() {
+      hasOrdersList = labelList;
+    });
 
     return MainLayout(
       // left: SizedBox(
@@ -158,8 +197,10 @@ class _OrderingPageState extends State<OrderingPage> {
       right: CheckBillsView(
           table: context.watch<SelectedTableProvider>().selectedTable,
           toOrderCallback: () {
+            print("toOrderCallback");
             _timeDilationTimer?.cancel();
             _timeDilationTimer = null;
+            WebSocketUtility().closeSocket();
           }),
     );
   }

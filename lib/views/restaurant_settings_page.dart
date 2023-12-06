@@ -7,10 +7,16 @@ import 'package:restaurant_counter/views/ordering/ordering_page.dart';
 import 'package:restaurant_counter/models/restaurant.dart' as model;
 import '../api/restaurant.dart';
 import '../api/utils.dart';
+import '../models/bill.dart';
+import '../provider/selected_table_provider.dart';
+import '../provider/socket_util.dart';
 import 'components/navbar.dart';
 
 import 'package:restaurant_counter/provider/restaurant_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
+import 'package:web_socket_channel/io.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 class RestaurantSettingsPage extends StatefulWidget {
   final String restaurantId;
@@ -56,21 +62,24 @@ class _RestaurantSettingsPageState extends State<RestaurantSettingsPage>
             restaurant.tables,
             restaurant.categories,
           );
-
-//       /// Create the WebSocket channel
-//       // final channel = WebSocketChannel.connect(
-//       final channel = IOWebSocketChannel.connect(
-//         Uri.parse(
-//           "wss://restaurant-uat.sum-foods.com/bills/subscription?restaurantId=${restaurantId}",
-//         ),
-//       );
-// //?authorization=Bearer ${token}
-//       channel.stream.listen((event) {
-//         print('got message');
-//       });
-//
-//
     });
+
+    //
+    // WebSocketChannel _channel = IOWebSocketChannel.connect(
+    //     "wss://restaurant-uat.sum-foods.com/bills/subscription?restaurantId=${restaurantId}",
+    //     headers: {
+    //       'Content-type': 'application/json',
+    //       'Accept': 'application/json',
+    //       'Authorization': 'Bearer ${token}'
+    //       // 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjE3MTcwNzk0MzAwMzMwNTE2NDgiLCJlbWFpbCI6Imp5ZThAdWFsYmVydGEuY2EiLCJyb2xlIjoiVVNFUiJ9.2_yI8_FBHqZhLDc6RnCfJcydzSm3TUolDBYY7NLmClI'
+    //     });
+    // print("========================");
+    // print(_channel);
+    //
+    // await _channel.ready; // ready is a future
+    //
+    // print('WS connected');
+
     listPrinters(restaurantId).then((list) => setState(() {
           printers = list.data;
           context.read<RestaurantProvider>().setRestaurantPrinter(list.data);

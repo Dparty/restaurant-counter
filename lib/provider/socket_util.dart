@@ -1,0 +1,182 @@
+import 'dart:async';
+
+import 'package:web_socket_channel/io.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
+
+import '../api/utils.dart';
+
+/// WebSocket地址
+const String _SOCKET_URL =
+    'wss://restaurant-uat.sum-foods.com/bills/subscription?restaurantId=';
+
+/// WebSocket状态
+enum SocketStatus {
+  SocketStatusConnected, // 已连接
+  SocketStatusFailed, // 失败
+  SocketStatusClosed, // 连接关闭
+}
+
+class WebSocketUtility {
+  /// 单例对象
+  static WebSocketUtility? _socket;
+
+  /// 内部构造方法，可避免外部暴露构造函数，进行实例化
+  WebSocketUtility._();
+
+  /// 获取单例内部方法
+  factory WebSocketUtility() {
+    // 只能有一个实例
+    if (_socket == null) {
+      _socket = new WebSocketUtility._();
+    }
+    return _socket!;
+  }
+
+  IOWebSocketChannel? _webSocket; // WebSocket
+  SocketStatus? _socketStatus; // socket状态
+  Timer? _heartBeat; // 心跳定时器
+  num _heartTimes = 3000; // 心跳间隔(毫秒)
+  num _reconnectCount = 60; // 重连次数，默认60次
+  num _reconnectTimes = 0; // 重连计数器
+  Timer? _reconnectTimer; // 重连定时器
+  Function? onError; // 连接错误回调
+  Function? onOpen; // 连接开启回调
+  Function? onMessage; // 接收消息回调
+  dynamic headers;
+  String? id;
+
+  /// 初始化WebSocket
+  void initWebSocket(
+      {Function? onOpen,
+      Function? onMessage,
+      Function? onError,
+      dynamic? headers,
+      String? id}) {
+    this.onOpen = onOpen!;
+    this.onMessage = onMessage!;
+    this.onError = onError!;
+    this.headers = headers;
+    this.id = id!;
+    openSocket();
+  }
+
+  /// 开启WebSocket连接
+  void openSocket() async {
+    final token = await getToken();
+    print('${_SOCKET_URL}${id}');
+    closeSocket();
+    _webSocket = IOWebSocketChannel.connect(
+      '${_SOCKET_URL}${id}',
+      headers: {
+        'Content-type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ${token}'
+        // 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjE3MTcwNzk0MzAwMzMwNTE2NDgiLCJlbWFpbCI6Imp5ZThAdWFsYmVydGEuY2EiLCJyb2xlIjoiVVNFUiJ9.2_yI8_FBHqZhLDc6RnCfJcydzSm3TUolDBYY7NLmClI'
+      },
+    );
+
+    // 连接成功，返回WebSocket实例
+    _socketStatus = SocketStatus.SocketStatusConnected;
+    print('WebSocket连接成功: $_socketStatus');
+    // 连接成功，重置重连计数器
+    _reconnectTimes = 0;
+    if (_reconnectTimer != null) {
+      _reconnectTimer!.cancel();
+      // _reconnectTimer = null;
+    }
+    onOpen!();
+    // 接收消息
+    _webSocket!.stream.listen((data) => webSocketOnMessage(data),
+        onError: webSocketOnError, onDone: webSocketOnDone);
+  }
+
+  /// WebSocket接收消息回调
+  webSocketOnMessage(data) {
+    onMessage!(data);
+  }
+
+  /// WebSocket关闭连接回调
+  webSocketOnDone() {
+    print('closed');
+    reconnect();
+  }
+
+  /// WebSocket连接错误回调
+  webSocketOnError(e) {
+    WebSocketChannelException ex = e;
+    _socketStatus = SocketStatus.SocketStatusFailed;
+    onError!(ex.message);
+    closeSocket();
+  }
+
+  /// 初始化心跳
+  void initHeartBeat() {
+    destroyHeartBeat();
+    _heartBeat = new Timer.periodic(Duration(milliseconds: _heartTimes.toInt()),
+        (timer) {
+      // sentHeart();
+    });
+  }
+
+  /// 心跳
+  void sentHeart() {
+    sendMessage('{"module": "HEART_CHECK", "message": "请求心跳"}');
+  }
+
+  /// 销毁心跳
+  void destroyHeartBeat() {
+    if (_heartBeat != null) {
+      _heartBeat!.cancel();
+      // _heartBeat = null;
+    }
+  }
+
+  /// 关闭WebSocket
+  void closeSocket() {
+    print("closeSocket");
+    if (_webSocket != null) {
+      print('WebSocket连接关闭');
+      _webSocket!.sink.close();
+      destroyHeartBeat();
+      _socketStatus = SocketStatus.SocketStatusClosed;
+    }
+  }
+
+  /// 发送WebSocket消息
+  void sendMessage(message) {
+    if (_webSocket != null) {
+      switch (_socketStatus) {
+        case SocketStatus.SocketStatusConnected:
+          print('发送中：' + message);
+          _webSocket!.sink.add(message);
+          break;
+        case SocketStatus.SocketStatusClosed:
+          print('连接已关闭');
+          break;
+        case SocketStatus.SocketStatusFailed:
+          print('发送失败');
+          break;
+        default:
+          break;
+      }
+    }
+  }
+
+  /// 重连机制
+  void reconnect() {
+    if (_reconnectTimes < _reconnectCount) {
+      _reconnectTimes++;
+      _reconnectTimer = new Timer.periodic(
+          Duration(milliseconds: _heartTimes.toInt()), (timer) {
+        openSocket();
+      });
+    } else {
+      if (_reconnectTimer != null) {
+        print('重连次数超过最大次数');
+        _reconnectTimer!.cancel();
+        // _reconnectTimer = null;
+      }
+      return;
+    }
+  }
+}

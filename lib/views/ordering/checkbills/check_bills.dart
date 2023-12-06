@@ -87,8 +87,10 @@ class _CheckBillsViewState extends State<CheckBillsView> {
     List<Bill>? bills =
         context.watch<SelectedTableProvider>().tableOrders?.toList();
 
-    List<Bill>? selectedTableBills =
-        bills?.where((i) => i.tableLabel == widget.table?.label).toList();
+    List<Bill>? selectedTableBills = bills
+        ?.where((i) =>
+            i.tableLabel == widget.table?.label && i.status == 'SUBMITTED')
+        .toList();
     List<String>? selectedTableBillsIds =
         selectedTableBills?.map((e) => e.id).toList();
 
