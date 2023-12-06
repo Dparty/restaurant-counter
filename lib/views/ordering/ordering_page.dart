@@ -112,7 +112,6 @@ class _OrderingPageState extends State<OrderingPage> {
     final List<String?> labelList = orders == null
         ? []
         : {...orders!.map((e) => e.tableLabel).toList()}.toList();
-    print(labelList?.length);
     setState(() {
       hasOrdersList = labelList;
     });
@@ -197,10 +196,9 @@ class _OrderingPageState extends State<OrderingPage> {
       right: CheckBillsView(
           table: context.watch<SelectedTableProvider>().selectedTable,
           toOrderCallback: () {
-            print("toOrderCallback");
-            _timeDilationTimer?.cancel();
-            _timeDilationTimer = null;
-            WebSocketUtility().closeSocket();
+            // _timeDilationTimer?.cancel();
+            // _timeDilationTimer = null;
+            // WebSocketUtility().closeSocket();
           }),
     );
   }
