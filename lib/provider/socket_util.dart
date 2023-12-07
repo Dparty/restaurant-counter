@@ -44,24 +44,20 @@ class WebSocketUtility {
   Function? onOpen; // 连接开启回调
   Function? onMessage; // 接收消息回调
   dynamic headers;
-  // String? id;
-  // String status = 'SUBMITTED';
   Map<String, dynamic>? queryParameters;
 
   /// 初始化WebSocket
-  void initWebSocket(
-      {Function? onOpen,
-      Function? onMessage,
-      Function? onError,
-      dynamic? headers,
-      Map<String, dynamic>? queryParameters,
-      String? id}) {
+  void initWebSocket({
+    Function? onOpen,
+    Function? onMessage,
+    Function? onError,
+    dynamic? headers,
+    Map<String, dynamic>? queryParameters,
+  }) {
     this.onOpen = onOpen!;
     this.onMessage = onMessage!;
     this.onError = onError!;
     this.headers = headers;
-    // this.id = id!;
-    // this.status = status;
     this.queryParameters = queryParameters;
     openSocket();
   }
