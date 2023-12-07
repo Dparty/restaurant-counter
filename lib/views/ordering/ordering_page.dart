@@ -64,7 +64,10 @@ class _OrderingPageState extends State<OrderingPage> {
     if (mounted) {
       if (!kIsWeb) {
         WebSocketUtility().initWebSocket(
-            id: restaurantId,
+            queryParameters: {
+              'restaurantId': restaurantId,
+              'status': 'SUBMITTED'
+            },
             onOpen: () {
               WebSocketUtility().initHeartBeat();
             },
