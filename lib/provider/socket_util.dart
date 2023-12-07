@@ -8,7 +8,7 @@ import '../api/utils.dart';
 
 /// WebSocket地址
 const String _SOCKET_URL =
-    'wss://restaurant-uat.sum-foods.com/bills/subscription'; //restaurantId
+    'wss://restaurant-uat.sum-foods.com/bills/subscription';
 
 /// WebSocket状态
 enum SocketStatus {
@@ -82,12 +82,6 @@ class WebSocketUtility {
         'Accept': 'application/json',
         'Authorization': 'Bearer ${token}'
       },
-      // '${_SOCKET_URL}${id}&status=SUBMITTED',
-      // headers: {
-      //   'Content-type': 'application/json',
-      //   'Accept': 'application/json',
-      //   'Authorization': 'Bearer ${token}'
-      // },
     );
 
     // 连接成功，返回WebSocket实例
