@@ -6,9 +6,7 @@ import 'package:restaurant_counter/provider/restaurant_provider.dart';
 import 'package:restaurant_counter/provider/selected_table_provider.dart';
 
 // components
-import 'package:restaurant_counter/views/components/default_layout.dart';
 import 'package:restaurant_counter/views/components/main_layout.dart';
-import 'package:restaurant_counter/views/components/navbar.dart';
 import 'package:restaurant_counter/views/components/item_card_list.dart';
 import './shopping_cart.dart';
 import './options_select.dart';
@@ -42,19 +40,7 @@ class _OrderItemState extends State<OrderItem> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    // final restaurant = context.read<RestaurantProvider>();
-    // _tabController =
-    //     TabController(length: restaurant.itemsMap.keys.length + 1, vsync: this);
-    // _tabController =
-    //     TabController(length: restaurant.itemsMap.keys.length, vsync: this);
-
     return MainLayout(
-        // left: SizedBox(
-        //   width: 200,
-        //   child: NavBar(
-        //     showSettings: false,
-        //   ),
-        // ),
         automaticallyImplyLeading: true,
         center: ListView(
           padding: const EdgeInsets.only(left: 20.0),

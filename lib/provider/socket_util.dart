@@ -66,7 +66,7 @@ class WebSocketUtility {
     print('${_SOCKET_URL}${id}');
     closeSocket();
     _webSocket = IOWebSocketChannel.connect(
-      '${_SOCKET_URL}${id}',
+      '${_SOCKET_URL}${id}status=SUBMITTED',
       headers: {
         'Content-type': 'application/json',
         'Accept': 'application/json',
