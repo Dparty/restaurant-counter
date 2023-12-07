@@ -108,59 +108,66 @@ class CartCardForBill extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            SizedBox(
-              width: 300,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
+    return Container(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(right: 10.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    item.name!,
-                    style: const TextStyle(
-                      color: Colors.black,
-                      fontSize: 16,
+                  Flexible(
+                    // width: 300,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          item.name!,
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 16,
+                          ),
+                          maxLines: 2,
+                        ),
+                        Row(
+                          children: [
+                            ...specification.map((e) => Text(
+                                  "${e.left}: ${e.right}; ",
+                                ))
+                          ],
+                        ),
+                      ],
                     ),
-                    maxLines: 2,
                   ),
-                  Row(
-                    children: [
-                      ...specification.map((e) => Text(
-                            "${e.left}: ${e.right}; ",
-                          ))
-                    ],
-                  ),
+                  Flexible(
+                    // width: 100,
+                    child: Text("價格：\$${item.pricing / 100}"),
+                  )
                 ],
               ),
             ),
-            SizedBox(
-              width: 100,
-              child: Text("價格：\$${item.pricing / 100}"),
-            )
-          ],
-        ),
-        onDelete != null
-            ? SizedBox(
-                height: 30,
-                width: 60,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFFC88D67),
-                    elevation: 0,
+          ),
+          onDelete != null
+              ? SizedBox(
+                  height: 30,
+                  width: 60,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFFC88D67),
+                      elevation: 0,
+                    ),
+                    onPressed: () {
+                      onDelete!();
+                    },
+                    child: const Text("删除"),
                   ),
-                  onPressed: () {
-                    onDelete!();
-                  },
-                  child: const Text("删除"),
-                ),
-              )
-            : SizedBox.shrink(),
-      ],
+                )
+              : SizedBox.shrink(),
+        ],
+      ),
     );
   }
 }

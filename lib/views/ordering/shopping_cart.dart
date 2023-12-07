@@ -106,7 +106,17 @@ class _ShowCurrentBillState extends State<ShowCurrentBill> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text("取餐號：${widget.orders?.pickUpCode}"),
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text("取餐號：${widget.orders?.pickUpCode}"),
+          IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: const Icon(Icons.close_outlined)),
+        ],
+      ),
       content: Builder(builder: (context) {
         var height = MediaQuery.of(context).size.height - 200;
         var width = MediaQuery.of(context).size.width - 800;
@@ -117,7 +127,7 @@ class _ShowCurrentBillState extends State<ShowCurrentBill> {
               height: 35.0,
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10.0),
-                  color: Color(0xFFC88D67)),
+                  color: const Color(0xFFC88D67)),
               child: InkWell(
                 onTap: () async {
                   showDialog(

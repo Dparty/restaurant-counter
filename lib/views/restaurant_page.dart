@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:restaurant_counter/main.dart';
 import 'package:restaurant_counter/models/restaurant.dart';
-import 'package:restaurant_counter/views/restaurant_settings_page.dart';
+import 'package:restaurant_counter/views/ordering/ordering_page.dart';
 
 import '../api/restaurant.dart';
 import '../api/utils.dart';
+import 'components/dialog.dart';
 
 class RestaurantsPage extends StatefulWidget {
   const RestaurantsPage({super.key});
@@ -43,16 +44,20 @@ class _RestaurantState extends State<RestaurantsPage> {
         actions: [
           IconButton(
               onPressed: () {
-                SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+                showAlertDialog(context, "確認退出APP?", onConfirmed: () {
+                  SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+                });
               },
               icon: const Icon(Icons.close_outlined)),
           IconButton(
               onPressed: () {
-                signout().then((_) {
-                  Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const HomePage()));
+                showAlertDialog(context, "確認退出登錄?", onConfirmed: () {
+                  signout().then((_) {
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const HomePage()));
+                  });
                 });
               },
               icon: const Icon(Icons.logout))
@@ -87,9 +92,8 @@ class RestaurantCard extends StatelessWidget {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => RestaurantSettingsPage(
-                            restaurantId: restaurant.id,
-                            selectedNavIndex: 3,
+                      builder: (context) => OrderingPage(
+                            restaurant.id,
                           )));
             },
             icon: const Icon(Icons.restaurant)),
