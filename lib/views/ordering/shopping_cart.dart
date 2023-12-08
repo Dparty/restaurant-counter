@@ -112,7 +112,8 @@ class _ShowCurrentBillState extends State<ShowCurrentBill> {
           Text("取餐號：${widget.orders?.pickUpCode}"),
           IconButton(
               onPressed: () {
-                Navigator.pop(context);
+                Navigator.pop(context); // close pop up
+                Navigator.pop(context); // pop to choose table page
               },
               icon: const Icon(Icons.close_outlined)),
         ],
