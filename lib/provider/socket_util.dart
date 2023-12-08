@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
@@ -7,7 +8,7 @@ import '../api/utils.dart';
 
 /// WebSocket地址
 const String _SOCKET_URL =
-    'wss://restaurant-uat.sum-foods.com/bills/subscription?restaurantId=';
+    'wss://restaurant-uat.sum-foods.com/bills/subscription';
 
 /// WebSocket状态
 enum SocketStatus {
@@ -43,35 +44,39 @@ class WebSocketUtility {
   Function? onOpen; // 连接开启回调
   Function? onMessage; // 接收消息回调
   dynamic headers;
-  String? id;
+  Map<String, dynamic>? queryParameters;
 
   /// 初始化WebSocket
-  void initWebSocket(
-      {Function? onOpen,
-      Function? onMessage,
-      Function? onError,
-      dynamic? headers,
-      String? id}) {
+  void initWebSocket({
+    Function? onOpen,
+    Function? onMessage,
+    Function? onError,
+    dynamic? headers,
+    Map<String, dynamic>? queryParameters,
+  }) {
     this.onOpen = onOpen!;
     this.onMessage = onMessage!;
     this.onError = onError!;
     this.headers = headers;
-    this.id = id!;
+    this.queryParameters = queryParameters;
     openSocket();
   }
 
   /// 开启WebSocket连接
   void openSocket() async {
     final token = await getToken();
-    print('${_SOCKET_URL}${id}');
     closeSocket();
+    print(Uri.parse(
+      '${_SOCKET_URL}',
+    ).replace(queryParameters: queryParameters));
     _webSocket = IOWebSocketChannel.connect(
-      '${_SOCKET_URL}${id}&status=SUBMITTED',
+      Uri.parse(
+        '${_SOCKET_URL}',
+      ).replace(queryParameters: queryParameters),
       headers: {
         'Content-type': 'application/json',
         'Accept': 'application/json',
         'Authorization': 'Bearer ${token}'
-        // 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjE3MTcwNzk0MzAwMzMwNTE2NDgiLCJlbWFpbCI6Imp5ZThAdWFsYmVydGEuY2EiLCJyb2xlIjoiVVNFUiJ9.2_yI8_FBHqZhLDc6RnCfJcydzSm3TUolDBYY7NLmClI'
       },
     );
 
