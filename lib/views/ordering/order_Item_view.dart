@@ -8,6 +8,7 @@ import 'package:restaurant_counter/provider/selected_table_provider.dart';
 // components
 import 'package:restaurant_counter/views/components/main_layout.dart';
 import 'package:restaurant_counter/views/components/item_card_list.dart';
+import '../../provider/shopping_cart_provider.dart';
 import './shopping_cart.dart';
 import './options_select.dart';
 
@@ -25,8 +26,13 @@ class _OrderItemState extends State<OrderItem> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     restaurant = context.read<RestaurantProvider>();
+
     _tabController =
         TabController(length: restaurant.itemsMap.keys.length, vsync: this);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<CartProvider>().resetShoppingCart();
+    });
   }
 
   void onTapCallback(item) {

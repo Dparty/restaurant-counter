@@ -18,6 +18,7 @@ import '../../api/utils.dart';
 import '../../models/bill.dart';
 import 'package:collection/collection.dart';
 
+import '../../provider/shopping_cart_provider.dart';
 import '../../provider/socket_util.dart';
 
 class OrderingPage extends StatefulWidget {
@@ -53,6 +54,10 @@ class _OrderingPageState extends State<OrderingPage> {
 
     listPrinters(restaurantId).then((list) => setState(() {
           context.read<RestaurantProvider>().setRestaurantPrinter(list.data);
+        }));
+
+    listDiscount(widget.restaurantId).then((list) => setState(() {
+          context.read<RestaurantProvider>().setRestaurantDiscount(list.data);
         }));
   }
 

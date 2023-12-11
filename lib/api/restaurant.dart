@@ -272,3 +272,15 @@ Future<void> cancelBillItems(
     throw Exception('Failed to cancel bill items');
   }
 }
+
+Future<DiscountList> listDiscount(String restaurantId) async {
+  final token = await getToken();
+  final response = await http.get(
+      Uri.parse("$baseUrl/restaurants/$restaurantId/discounts"),
+      headers: {'Authorization': "bearer $token"});
+  if (response.statusCode == 200) {
+    return DiscountList.fromJson(jsonDecode(response.body));
+  } else {
+    throw Exception('Failed to create restaurant');
+  }
+}
