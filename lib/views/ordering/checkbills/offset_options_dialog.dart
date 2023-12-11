@@ -1,8 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:restaurant_counter/models/restaurant.dart';
+
+class DiscountWrapper {
+  DiscountWrapper({this.discountList = const [], this.value = false});
+  List<List<dynamic>> discountList;
+  bool value;
+}
 
 class offsetOptions extends StatefulWidget {
   int? selectedIndex = 0;
-  int? defaultOffset = 0;
+  List? discountList = [];
   final Function? onSelected;
   final Function? onConfirmed;
   offsetOptions(
@@ -10,7 +17,7 @@ class offsetOptions extends StatefulWidget {
       this.selectedIndex,
       this.onSelected,
       this.onConfirmed,
-      this.defaultOffset})
+      this.discountList})
       : super(key: key);
 
   @override
@@ -18,36 +25,30 @@ class offsetOptions extends StatefulWidget {
 }
 
 class _offsetOptionsState extends State<offsetOptions> {
-  List checkListItems = [
-    {
-      "id": 0,
-      "value": false,
-      "offset": 0,
-      "title": "原價",
-    },
-    {
-      "id": 1,
-      "value": false,
-      "offset": -5,
-      "title": "95折",
-    },
-    {
-      "id": 2,
-      "value": false,
-      "offset": 10,
-      "title": "+10%服務費",
-    },
-  ];
+  // late List<dynamic> checkListItems;
+  late int selectedIndex = 0;
 
   @override
   void initState() {
     super.initState();
 
-    var target = checkListItems
-        .firstWhere((item) => item["offset"] == widget.defaultOffset);
-    if (target != null) {
-      target["value"] = true;
-    }
+    // var target = checkListItems
+    //     .firstWhere((item) => item["offset"] == widget.defaultOffset);
+    // if (target != null) {
+    //   target["value"] = true;
+    // }
+
+    // checkListItems = List.from(widget.discountList ?? []);
+    //
+    // for (int i = 0; i < checkListItems!.length; i++) {
+    //   print(checkListItems![i].label);
+    //   checkListItems![i]['value'] = 'false';
+    // }
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      //默認選第一個
+      widget.onSelected!(widget.discountList![0].offset);
+    });
   }
 
   void _cancel() {
@@ -74,7 +75,8 @@ class _offsetOptionsState extends State<offsetOptions> {
                   Expanded(
                     child: Column(
                       children: List.generate(
-                        checkListItems.length,
+                        widget.discountList!.length,
+                        // checkListItems.length,
                         (index) => CheckboxListTile(
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),
@@ -84,16 +86,15 @@ class _offsetOptionsState extends State<offsetOptions> {
                           contentPadding: EdgeInsets.zero,
                           dense: true,
                           title: Text(
-                            checkListItems[index]["title"],
+                            widget.discountList![index].label,
                           ),
-                          value: checkListItems[index]["value"],
+                          value: selectedIndex == index,
                           onChanged: (value) {
-                            widget.onSelected!(checkListItems[index]["offset"]);
+                            if (value == null) return;
+                            widget.onSelected!(
+                                widget.discountList![index].offset);
                             setState(() {
-                              for (var element in checkListItems) {
-                                element["value"] = false;
-                              }
-                              checkListItems[index]["value"] = true;
+                              selectedIndex = index;
                             });
                           },
                         ),

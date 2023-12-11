@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:restaurant_counter/provider/restaurant_provider.dart';
 import 'package:restaurant_counter/views/components/dialog.dart';
 import 'package:restaurant_counter/models/bill.dart';
 
@@ -72,9 +73,13 @@ class ShoppingCart extends StatelessWidget {
                   totalPrice: (cartProvider.total / 100).toString(),
                   onPressed: () {
                     String tableId = selectedTable?.id ?? '';
-                    createBill(tableId,
-                            context.read<CartProvider>().getCartListForBill())
-                        .then((value) {
+                    var billList =
+                        context.read<CartProvider>().getCartListForBill();
+                    if (billList.isEmpty) {
+                      showAlertDialog(context, "購物車為空");
+                      return;
+                    }
+                    createBill(tableId, billList).then((value) {
                       context.read<CartProvider>().resetShoppingCart();
                       // showAlertDialog(context, "訂單已提交");
                       // todo
@@ -105,6 +110,8 @@ class _ShowCurrentBillState extends State<ShowCurrentBill> {
 
   @override
   Widget build(BuildContext context) {
+    final discount = context.watch<RestaurantProvider>().discount;
+
     return AlertDialog(
       title: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -134,7 +141,7 @@ class _ShowCurrentBillState extends State<ShowCurrentBill> {
                   showDialog(
                     context: context,
                     builder: (context) => offsetOptions(
-                      defaultOffset: _offset,
+                      discountList: discount,
                       onSelected: (offset) {
                         setState(() {
                           _offset = offset;

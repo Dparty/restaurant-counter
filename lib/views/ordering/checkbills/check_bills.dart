@@ -110,6 +110,8 @@ class _CheckBillsViewState extends State<CheckBillsView> {
       }
     }
 
+    final discount = context.watch<RestaurantProvider>().discount;
+
     return Scaffold(
         appBar: AppBar(
             automaticallyImplyLeading: false,
@@ -250,7 +252,7 @@ class _CheckBillsViewState extends State<CheckBillsView> {
                                     showDialog(
                                       context: context,
                                       builder: (innerContext) => offsetOptions(
-                                        defaultOffset: _offset,
+                                        discountList: discount,
                                         onSelected: (offset) {
                                           setState(() {
                                             _offset = offset;
@@ -259,7 +261,75 @@ class _CheckBillsViewState extends State<CheckBillsView> {
                                         onConfirmed: () {
                                           printBills(selectedIds, _offset)
                                               .then((e) {
-                                            showAlertDialog(context, "訂單已打印");
+                                            // showAlertDialog(context, "訂單已打印");
+                                            showDialog(
+                                                context: context,
+                                                builder:
+                                                    (BuildContext context) {
+                                                  return AlertDialog(
+                                                    title: const Text("訂單已打印"),
+                                                    content: Container(
+                                                      width: 150,
+                                                      height: 35.0,
+                                                      decoration: BoxDecoration(
+                                                          borderRadius:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      10.0),
+                                                          color: const Color(
+                                                              0xFFC88D67)),
+                                                      child: GestureDetector(
+                                                        onTap: () async {
+                                                          await setBills(
+                                                                  selectedIds,
+                                                                  _offset,
+                                                                  'PAIED')
+                                                              .then((e) {
+                                                            Navigator.pop(
+                                                                context);
+                                                            showAlertDialog(
+                                                                context,
+                                                                "訂單已完成");
+                                                            listBills(
+                                                                    restaurant
+                                                                        .id,
+                                                                    status:
+                                                                        'SUBMITTED',
+                                                                    tableId:
+                                                                        table
+                                                                            ?.id)
+                                                                .then((orders) {
+                                                              context
+                                                                  .read<
+                                                                      SelectedTableProvider>()
+                                                                  .setAllTableOrders(
+                                                                      orders);
+                                                              context
+                                                                  .read<
+                                                                      SelectedTableProvider>()
+                                                                  .setSelectedBillIds(
+                                                                      []);
+                                                            });
+                                                          });
+                                                        },
+                                                        child: const Center(
+                                                            child: Text(
+                                                          '完成訂單',
+                                                          style: TextStyle(
+                                                              fontSize: 14.0,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                              color:
+                                                                  Colors.white),
+                                                        )),
+                                                      ),
+                                                    ),
+                                                    // actions: [
+                                                    //
+                                                    // ],
+                                                  );
+                                                });
                                           });
                                         },
                                       ),
@@ -291,7 +361,7 @@ class _CheckBillsViewState extends State<CheckBillsView> {
                                     showDialog(
                                       context: context,
                                       builder: (innerContext) => offsetOptions(
-                                        defaultOffset: _offset,
+                                        discountList: discount,
                                         onSelected: (offset) {
                                           setState(() {
                                             _offset = offset;
