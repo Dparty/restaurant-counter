@@ -67,10 +67,16 @@ class _offsetOptionsState extends State<offsetOptions> {
         content: Builder(builder: (context) {
           var height = MediaQuery.of(context).size.height;
           var width = MediaQuery.of(context).size.width;
-          return SizedBox(
-              height: height - 500,
-              width: width - 1000,
-              child: Column(
+          return ConstrainedBox(
+              constraints: BoxConstraints(
+                minHeight: height - 500,
+                minWidth: width - 1000,
+                maxHeight: height - 300,
+              ),
+              child: SizedBox(
+                  // height: height - 500,
+                  // width: width - 1000,
+                  child: Column(
                 children: [
                   Expanded(
                     child: Column(
@@ -131,7 +137,7 @@ class _offsetOptionsState extends State<offsetOptions> {
                     ],
                   )
                 ],
-              ));
+              )));
         }));
   }
 }

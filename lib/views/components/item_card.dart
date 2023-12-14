@@ -19,7 +19,7 @@ Widget itemCard(BuildContext context, item, {Function()? onTap, String? type}) {
                         blurRadius: 5.0)
                   ],
                   color: item.status == Status.DEACTIVED.name
-                      ? Color(0xFFFFECDF).withOpacity(0.5)
+                      ? const Color(0xFFFFECDF).withOpacity(0.5)
                       : Colors.white),
               child: Column(
                 // crossAxisAlignment: CrossAxisAlignment.stretch,
