@@ -35,7 +35,7 @@ class CartCard extends StatelessWidget {
             child: Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: Color(0xFFFFECDF),
+                  color: const Color(0xFFFFECDF),
                   borderRadius: BorderRadius.circular(15),
                 ),
                 child: Image(
@@ -60,14 +60,36 @@ class CartCard extends StatelessWidget {
                   style: const TextStyle(color: Colors.black, fontSize: 16),
                   maxLines: 2,
                 ),
-                const SizedBox(height: 10),
-                Text(
-                  item.selectedItems.toString(),
+                const SizedBox(height: 15),
+                Row(
+                  children: [
+                    const Text("規格："),
+                    ...item.selectedItems.entries
+                        .map((e) => Padding(
+                              padding: const EdgeInsets.only(right: 0.0),
+                              child: Row(
+                                children: [
+                                  // Text(
+                                  //   e.key,
+                                  // ),
+                                  // const Text(": "),
+                                  Text(
+                                    '${e.value}；',
+                                    style: const TextStyle(
+                                        // fontSize: 16,
+                                        // fontWeight: FontWeight.bold
+                                        ),
+                                  ),
+                                ],
+                              ),
+                            ))
+                        .toList(),
+                  ],
                 ),
                 Row(
                   // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Expanded(child: Text("價格：${item.price / 100}")),
+                    Expanded(child: Text("價格：\$${item.price / 100}")),
                     Row(
                       children: [
                         PlusMinusButtons(
