@@ -51,64 +51,73 @@ class _OptionSelectState extends State<OptionSelect> {
             child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  ...widget.item.attributes
-                      .asMap()
-                      .entries
-                      .map((entry) => Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                entry.value.label,
-                                textAlign: TextAlign.left,
-                              ),
-                              Row(
+                  Column(
+                    children: [
+                      ...widget.item.attributes
+                          .asMap()
+                          .entries
+                          .map((entry) => Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  ...entry.value.options
-                                      .map((option) => Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: ChoiceChip(
-                                              shape:
-                                                  const RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.all(
-                                                              Radius.circular(
-                                                                  10))),
-                                              label: Text(
-                                                  "${option.label}  +\$${(option.extra / 100).toString()}"),
-                                              selectedColor: Colors.orangeAccent
-                                                  .withAlpha(39),
-                                              selectedShadowColor:
-                                                  Colors.orangeAccent,
-                                              elevation: 3,
-                                              selected: selectedItems[
-                                                      entry.value.label] ==
-                                                  option.label,
-                                              onSelected: (bool selected) {
-                                                setState(() {
-                                                  if (selectedItems[
+                                  Text(
+                                    entry.value.label,
+                                    textAlign: TextAlign.left,
+                                  ),
+                                  Row(
+                                    children: [
+                                      ...entry.value.options
+                                          .map((option) => Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: ChoiceChip(
+                                                  shape:
+                                                      const RoundedRectangleBorder(
+                                                          borderRadius:
+                                                              BorderRadius.all(
+                                                                  Radius
+                                                                      .circular(
+                                                                          10))),
+                                                  label: Text(
+                                                      "${option.label}  +\$${(option.extra / 100).toString()}"),
+                                                  selectedColor: Colors
+                                                      .orangeAccent
+                                                      .withAlpha(39),
+                                                  selectedShadowColor:
+                                                      Colors.orangeAccent,
+                                                  elevation: 3,
+                                                  selected: selectedItems[
                                                           entry.value.label] ==
-                                                      option.label) {
-                                                    selectedItems.remove(
-                                                        entry.value.label);
-                                                  } else {
-                                                    selectedItems[entry.value
-                                                        .label] = option.label;
-                                                  }
-                                                  tmpPrice =
-                                                      (widget.item.pricing /
+                                                      option.label,
+                                                  onSelected: (bool selected) {
+                                                    setState(() {
+                                                      if (selectedItems[entry
+                                                              .value.label] ==
+                                                          option.label) {
+                                                        selectedItems.remove(
+                                                            entry.value.label);
+                                                      } else {
+                                                        selectedItems[entry
+                                                                .value.label] =
+                                                            option.label;
+                                                      }
+                                                      tmpPrice = (widget.item
+                                                                  .pricing /
                                                               100) +
                                                           (option.extra / 100)
                                                               .toDouble();
-                                                });
-                                              },
-                                            ),
-                                          ))
-                                      .toList()
+                                                    });
+                                                  },
+                                                ),
+                                              ))
+                                          .toList()
+                                    ],
+                                  )
                                 ],
-                              )
-                            ],
-                          ))
-                      .toList(),
+                              ))
+                          .toList(),
+                    ],
+                  ),
                   Row(
                     children: [
                       Expanded(child: Text("價格：$tmpPrice")),
