@@ -73,7 +73,7 @@ class _SigninFormState extends State<SigninForm> {
               padding: const EdgeInsets.symmetric(vertical: 16.0),
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Theme.of(context).primaryColor,
+                  backgroundColor: const Color(0xFFC88D67),
                 ),
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {

@@ -48,20 +48,42 @@ class BillCheckbox extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         onBillTap(bill);
-        // onChanged(!value);
       },
-      child: Padding(
-        padding: padding,
-        child: Row(
-          children: <Widget>[
-            Expanded(child: Text(label)),
-            Checkbox(
-              value: value,
-              onChanged: (bool? newValue) {
-                onChanged(newValue!);
-              },
+      child: Card(
+        child: ClipPath(
+          clipper: ShapeBorderClipper(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(3))),
+          child: Container(
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            decoration: const BoxDecoration(
+              border: Border(
+                left: BorderSide(color: Color(0xFFFFECDF), width: 5),
+              ),
             ),
-          ],
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                      child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('取餐號：${bill.pickUpCode}'),
+                      Text('總價：\$${(bill.total / 100).toString()}')
+                    ],
+                  )),
+                  Checkbox(
+                    value: value,
+                    onChanged: (bool? newValue) {
+                      onChanged(newValue!);
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ),
         ),
       ),
     );
