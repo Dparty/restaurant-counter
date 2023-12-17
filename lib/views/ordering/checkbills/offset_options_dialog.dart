@@ -63,81 +63,72 @@ class _offsetOptionsState extends State<offsetOptions> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
+        scrollable: true,
         title: const Text("折扣選擇"),
-        content: Builder(builder: (context) {
-          var height = MediaQuery.of(context).size.height;
-          var width = MediaQuery.of(context).size.width;
-          return ConstrainedBox(
-              constraints: BoxConstraints(
-                minHeight: height - 500,
-                minWidth: width - 1000,
-                maxHeight: height - 300,
-              ),
-              child: SizedBox(
-                  // height: height - 500,
-                  // width: width - 1000,
-                  child: Column(
-                children: [
-                  Expanded(
-                    child: Column(
-                      children: List.generate(
-                        widget.discountList!.length,
-                        // checkListItems.length,
-                        (index) => CheckboxListTile(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          activeColor: Color(0xFFC88D67),
-                          controlAffinity: ListTileControlAffinity.leading,
-                          contentPadding: EdgeInsets.zero,
-                          dense: true,
-                          title: Text(
-                            widget.discountList![index].label,
-                          ),
-                          value: selectedIndex == index,
-                          onChanged: (value) {
-                            if (value == null) return;
-                            widget.onSelected!(
-                                widget.discountList![index].offset);
-                            setState(() {
-                              selectedIndex = index;
-                            });
-                          },
+        content: SizedBox(
+            height: MediaQuery.of(context).size.height - 350,
+            width: MediaQuery.of(context).size.width - 1000,
+            child: Column(
+              children: [
+                Expanded(
+                  child: ListView(
+                    shrinkWrap: true,
+                    children: List.generate(
+                      widget.discountList!.length,
+                      (index) => CheckboxListTile(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
                         ),
+                        activeColor: const Color(0xFFC88D67),
+                        controlAffinity: ListTileControlAffinity.leading,
+                        contentPadding: EdgeInsets.zero,
+                        dense: true,
+                        title: Text(
+                          widget.discountList![index].label,
+                        ),
+                        value: selectedIndex == index,
+                        onChanged: (value) {
+                          if (value == null) return;
+                          widget
+                              .onSelected!(widget.discountList![index].offset);
+                          setState(() {
+                            selectedIndex = index;
+                          });
+                        },
                       ),
                     ),
                   ),
-                  Row(
-                    children: [
-                      Row(
-                        children: [
-                          ElevatedButton(
-                            onPressed: _cancel,
-                            style: ElevatedButton.styleFrom(
-                                shape: const StadiumBorder(),
-                                backgroundColor: Colors.grey),
-                            child: const Text(
-                              "取消",
-                              style: TextStyle(color: Colors.white),
-                            ),
+                ),
+                Row(
+                  children: [
+                    Row(
+                      children: [
+                        ElevatedButton(
+                          onPressed: _cancel,
+                          style: ElevatedButton.styleFrom(
+                              shape: const StadiumBorder(),
+                              backgroundColor: Colors.grey),
+                          child: const Text(
+                            "取消",
+                            style: TextStyle(color: Colors.white),
                           ),
-                          const SizedBox(width: 20),
-                          ElevatedButton(
-                            onPressed: _submit,
-                            style: ElevatedButton.styleFrom(
-                                shape: const StadiumBorder(),
-                                backgroundColor: Color(0xFFC88D67)),
-                            child: const Text(
-                              "確定",
-                              style: TextStyle(color: Colors.white),
-                            ),
+                        ),
+                        const SizedBox(width: 20),
+                        ElevatedButton(
+                          onPressed: _submit,
+                          style: ElevatedButton.styleFrom(
+                              shape: const StadiumBorder(),
+                              backgroundColor: Color(0xFFC88D67)),
+                          child: const Text(
+                            "確定",
+                            style: TextStyle(color: Colors.white),
                           ),
-                        ],
-                      )
-                    ],
-                  )
-                ],
-              )));
-        }));
+                        ),
+                      ],
+                    )
+                  ],
+                )
+              ],
+            )));
   }
 }

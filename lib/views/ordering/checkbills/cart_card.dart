@@ -61,31 +61,33 @@ class CartCard extends StatelessWidget {
                   maxLines: 2,
                 ),
                 const SizedBox(height: 15),
-                Row(
-                  children: [
-                    const Text("規格："),
-                    ...item.selectedItems.entries
-                        .map((e) => Padding(
-                              padding: const EdgeInsets.only(right: 0.0),
-                              child: Row(
-                                children: [
-                                  // Text(
-                                  //   e.key,
-                                  // ),
-                                  // const Text(": "),
-                                  Text(
-                                    '${e.value}；',
-                                    style: const TextStyle(
-                                        // fontSize: 16,
-                                        // fontWeight: FontWeight.bold
+                item.selectedItems.isNotEmpty
+                    ? Row(
+                        children: [
+                          const Text("規格："),
+                          ...item.selectedItems.entries
+                              .map((e) => Padding(
+                                    padding: const EdgeInsets.only(right: 0.0),
+                                    child: Row(
+                                      children: [
+                                        // Text(
+                                        //   e.key,
+                                        // ),
+                                        // const Text(": "),
+                                        Text(
+                                          '${e.value}；',
+                                          style: const TextStyle(
+                                              // fontSize: 16,
+                                              // fontWeight: FontWeight.bold
+                                              ),
                                         ),
-                                  ),
-                                ],
-                              ),
-                            ))
-                        .toList(),
-                  ],
-                ),
+                                      ],
+                                    ),
+                                  ))
+                              .toList(),
+                        ],
+                      )
+                    : const SizedBox.shrink(),
                 Row(
                   // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
