@@ -189,7 +189,7 @@ class CartCardForBill extends StatelessWidget {
                     child: const Text("删除"),
                   ),
                 )
-              : SizedBox.shrink(),
+              : const SizedBox.shrink(),
         ],
       ),
     );
