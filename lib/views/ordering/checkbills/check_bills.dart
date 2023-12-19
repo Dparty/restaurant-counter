@@ -146,33 +146,34 @@ class _CheckBillsViewState extends State<CheckBillsView> {
                   const SizedBox(
                     height: 20,
                   ),
-                  Container(
+                  GestureDetector(
+                    onTap: () {
+                      if (widget.table == null) {
+                        showAlertDialog(context, "請選擇桌號");
+                        return;
+                      }
+                      widget.toOrderCallback!();
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const OrderItem()));
+                    },
+                    child: Container(
                       width: MediaQuery.of(context).size.width - 1000.0,
                       height: 50.0,
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(25.0),
                           color: const Color(0xFFC88D67)),
-                      child: GestureDetector(
-                        onTap: () {
-                          if (widget.table == null) {
-                            showAlertDialog(context, "請選擇桌號");
-                            return;
-                          }
-                          widget.toOrderCallback!();
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const OrderItem()));
-                        },
-                        child: const Center(
-                            child: Text(
-                          '前往點單',
-                          style: TextStyle(
-                              fontSize: 14.0,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white),
-                        )),
-                      ))
+                      child: const Center(
+                          child: Text(
+                        '前往點單',
+                        style: TextStyle(
+                            fontSize: 14.0,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white),
+                      )),
+                    ),
+                  ),
                 ],
               ))
             : Column(
@@ -226,200 +227,331 @@ class _CheckBillsViewState extends State<CheckBillsView> {
                           vertical: 10, horizontal: 40),
                       child: Column(
                         children: [
-                          Container(
+                          GestureDetector(
+                            onTap: () {
+                              if (widget.table == null) {
+                                showAlertDialog(context, "請選擇桌號");
+                                return;
+                              }
+                              widget.toOrderCallback!();
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => const OrderItem()));
+                            },
+                            child: Container(
                               width: 150,
                               height: 35.0,
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10.0),
                                   color: const Color(0xFFC88D67)),
-                              child: GestureDetector(
-                                onTap: () {
-                                  if (widget.table == null) {
-                                    showAlertDialog(context, "請選擇桌號");
-                                    return;
-                                  }
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              const OrderItem()));
-                                },
-                                child: const Center(
-                                    child: Text(
-                                  '前往點單',
-                                  style: TextStyle(
-                                      fontSize: 14.0,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.white),
-                                )),
+                              child: const Center(
+                                  child: Text(
+                                '前往點單',
+                                style: TextStyle(
+                                    fontSize: 14.0,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white),
                               )),
+                            ),
+                          ),
                           const SizedBox(
                             height: 20,
                           ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Container(
-                                width: 150,
-                                height: 35.0,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10.0),
-                                    color: const Color(0xFFC88D67)),
-                                child: GestureDetector(
-                                  onTap: () async {
-                                    if (selectedIds.isEmpty) {
-                                      showAlertDialog(context, "請勾選需要打印的訂單");
-                                      return;
-                                    }
-                                    showDialog(
-                                      context: context,
-                                      builder: (innerContext) => offsetOptions(
-                                        discountList: discount,
-                                        onSelected: (offset) {
-                                          setState(() {
-                                            _offset = offset;
-                                          });
-                                        },
-                                        onConfirmed: () {
-                                          printBills(selectedIds, _offset)
-                                              .then((e) {
-                                            // showAlertDialog(context, "訂單已打印");
-                                            showDialog(
-                                                context: context,
-                                                builder:
-                                                    (BuildContext context) {
-                                                  return AlertDialog(
-                                                    title: const Text("訂單已打印"),
-                                                    content: Container(
-                                                      width: 150,
-                                                      height: 35.0,
-                                                      decoration: BoxDecoration(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(
-                                                                      10.0),
-                                                          color: const Color(
-                                                              0xFFC88D67)),
-                                                      child: GestureDetector(
-                                                        onTap: () async {
-                                                          await setBills(
-                                                                  selectedIds,
-                                                                  _offset,
-                                                                  'PAIED')
-                                                              .then((e) {
-                                                            Navigator.pop(
-                                                                context);
-                                                            showAlertDialog(
-                                                                context,
-                                                                "訂單已完成");
-                                                            listBills(
-                                                                    restaurant
-                                                                        .id,
-                                                                    status:
-                                                                        'SUBMITTED',
-                                                                    tableId:
-                                                                        table
-                                                                            ?.id)
-                                                                .then((orders) {
-                                                              context
-                                                                  .read<
-                                                                      SelectedTableProvider>()
-                                                                  .setAllTableOrders(
-                                                                      orders);
-                                                              context
-                                                                  .read<
-                                                                      SelectedTableProvider>()
-                                                                  .setSelectedBillIds(
-                                                                      []);
-                                                            });
+                              GestureDetector(
+                                onTap: () async {
+                                  if (selectedIds.isEmpty) {
+                                    showAlertDialog(context, "請勾選需要打印的訂單");
+                                    return;
+                                  }
+                                  showDialog(
+                                    context: context,
+                                    builder: (innerContext) => offsetOptions(
+                                      discountList: discount,
+                                      onSelected: (offset) {
+                                        setState(() {
+                                          _offset = offset;
+                                        });
+                                      },
+                                      onConfirmed: () {
+                                        printBills(selectedIds, _offset)
+                                            .then((e) {
+                                          // showAlertDialog(context, "訂單已打印");
+                                          showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return AlertDialog(
+                                                  title: const Text("訂單已打印"),
+                                                  content: Container(
+                                                    width: 150,
+                                                    height: 35.0,
+                                                    decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(10.0),
+                                                        color: const Color(
+                                                            0xFFC88D67)),
+                                                    child: GestureDetector(
+                                                      onTap: () async {
+                                                        await setBills(
+                                                                selectedIds,
+                                                                _offset,
+                                                                'PAIED')
+                                                            .then((e) {
+                                                          Navigator.pop(
+                                                              context);
+                                                          showAlertDialog(
+                                                              context, "訂單已完成");
+                                                          listBills(
+                                                                  restaurant.id,
+                                                                  status:
+                                                                      'SUBMITTED',
+                                                                  tableId:
+                                                                      table?.id)
+                                                              .then((orders) {
+                                                            context
+                                                                .read<
+                                                                    SelectedTableProvider>()
+                                                                .setAllTableOrders(
+                                                                    orders);
+                                                            context
+                                                                .read<
+                                                                    SelectedTableProvider>()
+                                                                .setSelectedBillIds(
+                                                                    []);
                                                           });
-                                                        },
-                                                        child: const Center(
-                                                            child: Text(
-                                                          '完成訂單',
-                                                          style: TextStyle(
-                                                              fontSize: 14.0,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
-                                                              color:
-                                                                  Colors.white),
-                                                        )),
-                                                      ),
+                                                        });
+                                                      },
+                                                      child: const Center(
+                                                          child: Text(
+                                                        '完成訂單',
+                                                        style: TextStyle(
+                                                            fontSize: 14.0,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            color:
+                                                                Colors.white),
+                                                      )),
                                                     ),
-                                                    // actions: [
-                                                    //
-                                                    // ],
-                                                  );
-                                                });
-                                          });
-                                        },
-                                      ),
-                                    );
-                                  },
-                                  child: const Center(
-                                      child: Text(
-                                    '打印訂單',
-                                    style: TextStyle(
-                                        fontSize: 14.0,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white),
-                                  )),
+                                                  ),
+                                                  // actions: [
+                                                  //
+                                                  // ],
+                                                );
+                                              });
+                                        });
+                                      },
+                                    ),
+                                  );
+                                },
+                                child: Container(
+                                  width: 150,
+                                  height: 35.0,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                      color: const Color(0xFFC88D67)),
+                                  child: GestureDetector(
+                                    onTap: () async {
+                                      if (selectedIds.isEmpty) {
+                                        showAlertDialog(context, "請勾選需要打印的訂單");
+                                        return;
+                                      }
+                                      showDialog(
+                                        context: context,
+                                        builder: (innerContext) =>
+                                            offsetOptions(
+                                          discountList: discount,
+                                          onSelected: (offset) {
+                                            setState(() {
+                                              _offset = offset;
+                                            });
+                                          },
+                                          onConfirmed: () {
+                                            printBills(selectedIds, _offset)
+                                                .then((e) {
+                                              // showAlertDialog(context, "訂單已打印");
+                                              showDialog(
+                                                  context: context,
+                                                  builder:
+                                                      (BuildContext context) {
+                                                    return AlertDialog(
+                                                      title:
+                                                          const Text("訂單已打印"),
+                                                      content: Container(
+                                                        width: 150,
+                                                        height: 35.0,
+                                                        decoration: BoxDecoration(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        10.0),
+                                                            color: const Color(
+                                                                0xFFC88D67)),
+                                                        child: GestureDetector(
+                                                          onTap: () async {
+                                                            await setBills(
+                                                                    selectedIds,
+                                                                    _offset,
+                                                                    'PAIED')
+                                                                .then((e) {
+                                                              Navigator.pop(
+                                                                  context);
+                                                              showAlertDialog(
+                                                                  context,
+                                                                  "訂單已完成");
+                                                              listBills(
+                                                                      restaurant
+                                                                          .id,
+                                                                      status:
+                                                                          'SUBMITTED',
+                                                                      tableId:
+                                                                          table
+                                                                              ?.id)
+                                                                  .then(
+                                                                      (orders) {
+                                                                context
+                                                                    .read<
+                                                                        SelectedTableProvider>()
+                                                                    .setAllTableOrders(
+                                                                        orders);
+                                                                context
+                                                                    .read<
+                                                                        SelectedTableProvider>()
+                                                                    .setSelectedBillIds(
+                                                                        []);
+                                                              });
+                                                            });
+                                                          },
+                                                          child: const Center(
+                                                              child: Text(
+                                                            '完成訂單',
+                                                            style: TextStyle(
+                                                                fontSize: 14.0,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                                color: Colors
+                                                                    .white),
+                                                          )),
+                                                        ),
+                                                      ),
+                                                      // actions: [
+                                                      //
+                                                      // ],
+                                                    );
+                                                  });
+                                            });
+                                          },
+                                        ),
+                                      );
+                                    },
+                                    child: const Center(
+                                        child: Text(
+                                      '打印訂單',
+                                      style: TextStyle(
+                                          fontSize: 14.0,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white),
+                                    )),
+                                  ),
                                 ),
                               ),
-                              Container(
-                                width: 150,
-                                height: 35.0,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10.0),
-                                    color: const Color(0xFFC88D67)),
-                                child: GestureDetector(
-                                  onTap: () async {
-                                    if (selectedIds!.isEmpty) {
-                                      showAlertDialog(context, "請勾選需要打印的訂單");
-                                      return;
-                                    }
+                              GestureDetector(
+                                onTap: () async {
+                                  if (selectedIds!.isEmpty) {
+                                    showAlertDialog(context, "請勾選需要打印的訂單");
+                                    return;
+                                  }
+                                  showDialog(
+                                    context: context,
+                                    builder: (innerContext) => offsetOptions(
+                                      discountList: discount,
+                                      onSelected: (offset) {
+                                        setState(() {
+                                          _offset = offset;
+                                        });
+                                      },
+                                      onConfirmed: () async {
+                                        await setBills(
+                                                selectedIds, _offset, 'PAIED')
+                                            .then((e) {
+                                          showAlertDialog(context, "訂單已完成");
+                                          listBills(restaurant.id,
+                                                  status: 'SUBMITTED',
+                                                  tableId: table?.id)
+                                              .then((orders) {
+                                            context
+                                                .read<SelectedTableProvider>()
+                                                .setAllTableOrders(orders);
+                                            context
+                                                .read<SelectedTableProvider>()
+                                                .setSelectedBillIds([]);
+                                          });
+                                        });
+                                      },
+                                    ),
+                                  );
+                                },
+                                child: Container(
+                                  width: 150,
+                                  height: 35.0,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10.0),
+                                      color: const Color(0xFFC88D67)),
+                                  child: GestureDetector(
+                                    onTap: () async {
+                                      if (selectedIds!.isEmpty) {
+                                        showAlertDialog(context, "請勾選需要打印的訂單");
+                                        return;
+                                      }
 
-                                    showDialog(
-                                      context: context,
-                                      builder: (innerContext) => offsetOptions(
-                                        discountList: discount,
-                                        onSelected: (offset) {
-                                          setState(() {
-                                            _offset = offset;
-                                          });
-                                        },
-                                        onConfirmed: () async {
-                                          await setBills(
-                                                  selectedIds, _offset, 'PAIED')
-                                              .then((e) {
-                                            showAlertDialog(context, "訂單已完成");
-                                            listBills(restaurant.id,
-                                                    status: 'SUBMITTED',
-                                                    tableId: table?.id)
-                                                .then((orders) {
-                                              context
-                                                  .read<SelectedTableProvider>()
-                                                  .setAllTableOrders(orders);
-                                              context
-                                                  .read<SelectedTableProvider>()
-                                                  .setSelectedBillIds([]);
+                                      showDialog(
+                                        context: context,
+                                        builder: (innerContext) =>
+                                            offsetOptions(
+                                          discountList: discount,
+                                          onSelected: (offset) {
+                                            setState(() {
+                                              _offset = offset;
                                             });
-                                          });
-                                        },
-                                      ),
-                                    );
-                                  },
-                                  child: const Center(
-                                      child: Text(
-                                    '完成訂單',
-                                    style: TextStyle(
-                                        fontSize: 14.0,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white),
-                                  )),
+                                          },
+                                          onConfirmed: () async {
+                                            await setBills(selectedIds, _offset,
+                                                    'PAIED')
+                                                .then((e) {
+                                              showAlertDialog(context, "訂單已完成");
+                                              listBills(restaurant.id,
+                                                      status: 'SUBMITTED',
+                                                      tableId: table?.id)
+                                                  .then((orders) {
+                                                context
+                                                    .read<
+                                                        SelectedTableProvider>()
+                                                    .setAllTableOrders(orders);
+                                                context
+                                                    .read<
+                                                        SelectedTableProvider>()
+                                                    .setSelectedBillIds([]);
+                                              });
+                                            });
+                                          },
+                                        ),
+                                      );
+                                    },
+                                    child: const Center(
+                                        child: Text(
+                                      '完成訂單',
+                                      style: TextStyle(
+                                          fontSize: 14.0,
+                                          fontWeight: FontWeight.bold,
+                                          color: Colors.white),
+                                    )),
+                                  ),
                                 ),
-                              )
+                              ),
                             ],
                           ),
                         ],
