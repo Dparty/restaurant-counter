@@ -572,6 +572,56 @@ class ShowCurrentBill extends StatefulWidget {
 class _ShowCurrentBillState extends State<ShowCurrentBill> {
   late List<Order> tmpOrders;
   List<model.Specification> deleted = [];
+  final TextEditingController _confirm = TextEditingController();
+  String? valueText;
+
+  Future<void> _displayTextInputDialog(BuildContext context) async {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text('請輸入密碼確認'),
+            content: TextField(
+              onChanged: (value) {
+                setState(() {
+                  valueText = value;
+                });
+              },
+              controller: _confirm,
+              decoration: const InputDecoration(hintText: "請輸入密碼"),
+            ),
+            actions: <Widget>[
+              MaterialButton(
+                // textColor: kPrimaryColor,
+                child: const Text('取消'),
+                onPressed: () {
+                  setState(() {
+                    _confirm.text = "";
+                    Navigator.pop(context);
+                  });
+                },
+              ),
+              MaterialButton(
+                color: const Color(0xFFC88D67),
+                textColor: Colors.white,
+                child: const Text('確認'),
+                onPressed: () async {
+                  if (valueText == '643769') {
+                    await cancelBillItems(widget.orders.id, deleted).then((e) {
+                      Navigator.of(context).pop();
+                      showAlertDialog(context, "訂單已修改");
+                    });
+                  } else {
+                    _confirm.text = "";
+                    Navigator.pop(context);
+                    showAlertDialog(context, "密碼錯誤");
+                  }
+                },
+              ),
+            ],
+          );
+        });
+  }
 
   @override
   void initState() {
@@ -598,17 +648,19 @@ class _ShowCurrentBillState extends State<ShowCurrentBill> {
                   color: const Color(0xFFC88D67)),
               child: InkWell(
                 onTap: () async {
-                  showAlertDialog(
-                    context,
-                    "確認修改訂單?",
-                    onConfirmed: () async {
-                      await cancelBillItems(widget.orders.id, deleted)
-                          .then((e) {
-                        Navigator.of(context).pop();
-                        showAlertDialog(context, "訂單已修改");
-                      });
-                    },
-                  );
+                  await _displayTextInputDialog(context);
+                  _confirm.text = '';
+                  // showAlertDialog(
+                  //   context,
+                  //   "確認修改訂單?",
+                  //   onConfirmed: () async {
+                  //     await cancelBillItems(widget.orders.id, deleted)
+                  //         .then((e) {
+                  //       Navigator.of(context).pop();
+                  //       showAlertDialog(context, "訂單已修改");
+                  //     });
+                  //   },
+                  // );
                 },
                 child: const Center(
                     child: Text(
