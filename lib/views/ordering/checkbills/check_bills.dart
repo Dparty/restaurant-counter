@@ -103,15 +103,22 @@ class CheckBillsView extends StatefulWidget {
 
 class _CheckBillsViewState extends State<CheckBillsView> {
   int _offset = 0;
+  bool checkedValue = false;
 
   @override
   Widget build(BuildContext context) {
     List<Bill>? bills =
         context.watch<SelectedTableProvider>().tableOrders?.toList();
 
+    // List<Bill>? selectedTableBills = bills
+    //     ?.where((i) =>
+    //         i.tableLabel == widget.table?.label && i.status == 'SUBMITTED')
+    //     .toList();
     List<Bill>? selectedTableBills = bills
         ?.where((i) =>
-            i.tableLabel == widget.table?.label && i.status == 'SUBMITTED')
+            i.tableLabel == widget.table?.label &&
+            (i.status == 'SUBMITTED' ||
+                (checkedValue == true && i.status == 'PAIED')))
         .toList();
     List<String>? selectedTableBillsIds =
         selectedTableBills?.map((e) => e.id).toList();
@@ -178,20 +185,54 @@ class _CheckBillsViewState extends State<CheckBillsView> {
               ))
             : Column(
                 children: [
+                  CheckboxListTile(
+                    title: const Text("顯示已完成訂單"),
+                    value: checkedValue,
+                    onChanged: (newValue) {
+                      setState(() {
+                        checkedValue = newValue!;
+                      });
+                    },
+                    controlAffinity: ListTileControlAffinity
+                        .leading, //  <-- leading Checkbox
+                  ),
                   Padding(
                     padding: const EdgeInsets.only(right: 16.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Text("全部選擇/取消"),
-                        Checkbox(
-                            // value: !_isSelected.contains(false),
-                            value: selectedIds.isNotEmpty,
-                            onChanged: (val) {
-                              setState(() {
-                                setCheckAll(val!);
-                              });
-                            }),
+                        // Expanded(
+                        //   child: Row(
+                        //     children: [
+                        //       // CheckboxListTile(
+                        //       //   title: Text("顯示已完成訂單"),
+                        //       //   value: checkedValue,
+                        //       //   onChanged: (newValue) {
+                        //       //     setState(() {
+                        //       //       print("newValue");
+                        //       //       checkedValue = newValue!;
+                        //       //     });
+                        //       //   },
+                        //       //   controlAffinity: ListTileControlAffinity
+                        //       //       .leading, //  <-- leading Checkbox
+                        //       // ),
+                        //     ],
+                        //   ),
+                        // ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            const Text("全部選擇/取消"),
+                            Checkbox(
+                                // value: !_isSelected.contains(false),
+                                value: selectedIds.isNotEmpty,
+                                onChanged: (val) {
+                                  setState(() {
+                                    setCheckAll(val!);
+                                  });
+                                }),
+                          ],
+                        )
                       ],
                     ),
                   ),
