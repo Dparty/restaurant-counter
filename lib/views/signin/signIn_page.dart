@@ -9,12 +9,15 @@ class SigninPage extends StatelessWidget {
     return Row(
       children: [
         Expanded(
-            child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-          Image.asset(
-            "images/favicon.png",
-            width: 300,
-          ),
-        ])),
+            child: Material(
+          color: Colors.white,
+          child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+            Image.asset(
+              "images/favicon.png",
+              width: 300,
+            ),
+          ]),
+        )),
         Expanded(
           child: Material(
             color: Colors.white,
@@ -26,7 +29,8 @@ class SigninPage extends StatelessWidget {
                 child: Center(
                   child: Container(
                     margin: const EdgeInsets.all(150.0),
-                    child: const SigninForm(),
+                    child: const Scaffold(
+                        resizeToAvoidBottomInset: false, body: SigninForm()),
                   ),
                 )),
           ),

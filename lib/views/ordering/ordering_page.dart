@@ -64,6 +64,7 @@ class _OrderingPageState extends State<OrderingPage> {
   @override
   void initState() {
     super.initState();
+    var now = DateTime.now();
     loadRestaurant();
 
     if (mounted) {
@@ -71,13 +72,18 @@ class _OrderingPageState extends State<OrderingPage> {
         WebSocketUtility().initWebSocket(
             queryParameters: {
               'restaurantId': restaurantId,
-              'status': 'SUBMITTED'
+              // 'status': 'SUBMITTED',
+              'startAt': DateTime(now.year, now.month, now.day, 00, 00, 00)
+                      .millisecondsSinceEpoch ~/
+                  1000,
+              'endAt': DateTime(now.year, now.month, now.day, 23, 59, 59)
+                      .millisecondsSinceEpoch ~/
+                  1000
             },
             onOpen: () {
               WebSocketUtility().initHeartBeat();
             },
             onMessage: (data) {
-              print("message");
               List<Bill>? billList = (jsonDecode(data) as Iterable)
                   .map((e) => Bill.fromJson(e))
                   .toList();
@@ -98,7 +104,17 @@ class _OrderingPageState extends State<OrderingPage> {
   }
 
   pollingBills(Timer timer) {
-    listBills(restaurantId, status: 'SUBMITTED').then((orders) {
+    var now = DateTime.now();
+
+    listBills(restaurantId,
+            // status: 'SUBMITTED',
+            startAt: DateTime(now.year, now.month, now.day, 02, 00, 00)
+                    .millisecondsSinceEpoch ~/
+                1000,
+            endAt: DateTime(now.year, now.month, now.day + 1, 02, 00, 00)
+                    .millisecondsSinceEpoch ~/
+                1000)
+        .then((orders) {
       oldOrders = context.read<SelectedTableProvider>().tableOrders;
 
       // if (orders.length == oldOrders?.length) {
