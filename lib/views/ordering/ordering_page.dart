@@ -127,7 +127,12 @@ class _OrderingPageState extends State<OrderingPage> {
       // }
 
       context.read<SelectedTableProvider>().setAllTableOrders(orders);
-      final labelList = {...orders.map((e) => e.tableLabel).toList()}.toList();
+      final labelList = {
+        ...orders
+            .where((i) => i.status == 'SUBMITTED')
+            .map((e) => e.tableLabel)
+            .toList()
+      }.toList();
       setState(() {
         hasOrdersList = labelList;
       });
@@ -150,7 +155,12 @@ class _OrderingPageState extends State<OrderingPage> {
     List<Bill>? orders = tableProvider.tableOrders;
     final List<String?> labelList = orders == null
         ? []
-        : {...orders!.map((e) => e.tableLabel).toList()}.toList();
+        : {
+            ...orders!
+                .where((i) => i.status == 'SUBMITTED')
+                .map((e) => e.tableLabel)
+                .toList()
+          }.toList();
     setState(() {
       hasOrdersList = labelList;
     });
