@@ -8,16 +8,18 @@ class SigninPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Expanded(
-            child: Material(
-          color: Colors.white,
-          child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-            Image.asset(
-              "images/favicon.png",
-              width: 300,
-            ),
-          ]),
-        )),
+        SizedBox(
+          width: 450,
+          child: Material(
+            color: Colors.white,
+            child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              Image.asset(
+                "images/favicon.png",
+                width: 300,
+              ),
+            ]),
+          ),
+        ),
         Expanded(
           child: Material(
             color: Colors.white,

@@ -120,6 +120,11 @@ class _CheckBillsViewState extends State<CheckBillsView> {
             (i.status == 'SUBMITTED' ||
                 (checkedValue == true && i.status == 'PAIED')))
         .toList();
+
+    bool hasBills =
+        bills?.where((i) => i.tableLabel == widget.table?.label)?.isNotEmpty ??
+            false;
+
     List<String>? selectedTableBillsIds =
         selectedTableBills?.map((e) => e.id).toList();
 
@@ -145,7 +150,7 @@ class _CheckBillsViewState extends State<CheckBillsView> {
         appBar: AppBar(
             automaticallyImplyLeading: false,
             title: Text('${table?.label ?? ''}訂單列表')),
-        body: selectedTableBills != null && selectedTableBills.isEmpty
+        body: !hasBills
             ? Center(
                 child: Column(
                 children: [
@@ -201,24 +206,6 @@ class _CheckBillsViewState extends State<CheckBillsView> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        // Expanded(
-                        //   child: Row(
-                        //     children: [
-                        //       // CheckboxListTile(
-                        //       //   title: Text("顯示已完成訂單"),
-                        //       //   value: checkedValue,
-                        //       //   onChanged: (newValue) {
-                        //       //     setState(() {
-                        //       //       print("newValue");
-                        //       //       checkedValue = newValue!;
-                        //       //     });
-                        //       //   },
-                        //       //   controlAffinity: ListTileControlAffinity
-                        //       //       .leading, //  <-- leading Checkbox
-                        //       // ),
-                        //     ],
-                        //   ),
-                        // ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
@@ -348,8 +335,6 @@ class _CheckBillsViewState extends State<CheckBillsView> {
                                                               context, "訂單已完成");
                                                           listBills(
                                                                   restaurant.id,
-                                                                  status:
-                                                                      'SUBMITTED',
                                                                   tableId:
                                                                       table?.id)
                                                               .then((orders) {
@@ -446,8 +431,6 @@ class _CheckBillsViewState extends State<CheckBillsView> {
                                                               listBills(
                                                                       restaurant
                                                                           .id,
-                                                                      status:
-                                                                          'SUBMITTED',
                                                                       tableId:
                                                                           table
                                                                               ?.id)
@@ -521,7 +504,6 @@ class _CheckBillsViewState extends State<CheckBillsView> {
                                             .then((e) {
                                           showAlertDialog(context, "訂單已完成");
                                           listBills(restaurant.id,
-                                                  status: 'SUBMITTED',
                                                   tableId: table?.id)
                                               .then((orders) {
                                             context
@@ -565,7 +547,6 @@ class _CheckBillsViewState extends State<CheckBillsView> {
                                                 .then((e) {
                                               showAlertDialog(context, "訂單已完成");
                                               listBills(restaurant.id,
-                                                      status: 'SUBMITTED',
                                                       tableId: table?.id)
                                                   .then((orders) {
                                                 context
